@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace SolidPrinciples
 {
-    public class Customer : ICustomer
+    public class Customer : ICustomer, IReadableCustomer
     {
+        IErrorHandler _errorHandler;
+        public Customer(IErrorHandler errorHandler)
+        {
+            _errorHandler = errorHandler;
+        }
+        public Customer()
+        {
+            _errorHandler = new ErrorHandler();
+        }
         /*
          *OCP Violation
          */
@@ -62,13 +71,50 @@ namespace SolidPrinciples
             try
             {
                 //Add customer to DB
+                Console.WriteLine("Customer added Successfully.");
+            }
+            catch (Exception ex)
+            {
+                IErrorHandler e = _errorHandler;
+                e.HandleError(ex);
+            }
+        }
+
+        public void read()
+        {
+            //Logic to Display Customer Data
+            Console.WriteLine("Read customer Data");
+        }
+    }
+
+    public class Prospect : IProspect
+    {
+        /*
+         *OCP Violation
+         */
+        // CustomerType type{ get; set; }
+        public string CustomerName { get; set; }
+        public int Age { get; set; }
+        public float Discount { get; set; }
+
+        public virtual float CalculateDiscount()
+        {
+            Discount = 0;
+            try
+            {
+
+
             }
             catch (Exception ex)
             {
                 ErrorHandler e = new ErrorHandler();
                 e.HandleError(ex);
             }
+            return Discount;
         }
         
+
     }
+
+
 }
